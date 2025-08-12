@@ -35,6 +35,14 @@ class Domain:
             )
         return None
 
+    @classmethod
+    def OptimizeSurface(
+        cls,
+        nodes : list[ tuple[ float, float, float ] ],
+        elements : list[ tuple[ int, ... ] ],
+    ):
+        pass
+
     def DualContour2D( self ):
         nodes = []
         elements = []

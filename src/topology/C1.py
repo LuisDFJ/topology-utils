@@ -15,9 +15,9 @@ class C1:
             du : float = 0,
         ):
         return (
-            D[0] + ( u + ( du + 0.5 ) if d == 0 else 0 ) * (D[1] - D[0])/(N[0]+1),
-            D[2] + ( v + ( du + 0.5 ) if d == 1 else 0 ) * (D[3] - D[2])/(N[1]+1),
-            D[4] + ( w + ( du + 0.5 ) if d == 2 else 0 ) * (D[5] - D[4])/(N[2]+1),
+            D[0] + ( u + ( du + 0.5 ) if d == 0 else 0 ) * (D[1] - D[0])/N[0],
+            D[2] + ( v + ( du + 0.5 ) if d == 1 else 0 ) * (D[3] - D[2])/N[1],
+            D[4] + ( w + ( du + 0.5 ) if d == 2 else 0 ) * (D[5] - D[4])/N[2],
         )
 
     @classmethod
