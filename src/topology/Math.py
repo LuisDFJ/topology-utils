@@ -3,7 +3,7 @@ import math
 
 class Math:
 
-    H = 1e-5
+    H = 1e-6
 
     @classmethod
     def diff(
@@ -34,3 +34,10 @@ class Math:
     ):
         return Math.normal( *Math.diff( x,y,z,f ) )
 
+    @classmethod
+    def dot(
+        cls,
+        a : tuple[ float, float, float ],
+        b : tuple[ float, float, float ]
+    ):
+        return a[0]*b[0] + a[1]*b[1] + a[2]*b[2] 

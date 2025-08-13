@@ -6,6 +6,8 @@ from src.topology.C3 import C3
 from src.topology.Opt import Opt
 from src.topology.Math import Math
 
+import numpy as np
+
 from typing import Callable
 
 class Domain:
@@ -25,7 +27,7 @@ class Domain:
             lambda x, dx = ( 0,0,0 ) : C3.map( N, D, *x, *dx ),
         )
 
-        self.C1_record = {}
+        self.C1_record = []
 
     def evalC1( self, u : int, v : int, w : int, d : int ):
         def wrapper( u : int, v : int, w : int, d : int ):
@@ -35,12 +37,14 @@ class Domain:
                 return C1.getC3( u,v,w,d )
             return None
 
-        if not (u,v,w,d) in self.C1_record.keys(): self.C1_record[ (u,v,w,d) ] = wrapper( u,v,w,d )
-        return self.C1_record[ (u,v,w,d) ]
+        res = wrapper( u,v,w,d )
+        if ( not isinstance( res, type(None) ) ) and ( not (u,v,w,d) in self.C1_record ): self.C1_record.append( (u,v,w,d) )
+        return res
 
     def optC1( self, u : int, v : int, w : int, d : int ):
         f  = lambda dx : self.f( *self.M[1]( (u,v,w,d), ( dx, ) ) )
-        dx = Opt.C1( 0, 1, f )
+        dx = Opt.C1( -0.5, 0.5, f )
+        if dx > 0.5 or dx < -0.5: print( dx )
         p  = self.M[1]( (u,v,w,d), ( dx, ) )
         return p, Math.diffN( *p, self.f )
 
@@ -49,11 +53,17 @@ class Domain:
         nodes : list[ tuple[ int, int, int ] ]
     ):
         opt_nodes = []
-        keys = self.C1_record.keys()
         for node in nodes:
-            pivots = []
+            A = []; b = []
             for c1 in C3.getC1( *node ):
-                if c1 in keys: pivots.append( self.optC1( *c1 ) )
+                if c1 in self.C1_record: 
+                    p, n = self.optC1( *c1 )
+                    A.append( n ); b.append( Math.dot( n, p ) )
+            A = np.array( A ); b = np.array( b )
+            x, res, rank, s = np.linalg.lstsq( A, b )
+            #if rank < 3: print( rank, x, res, s )
+            opt_nodes.append( tuple( x.tolist() ) )
+
             #opt_nodes.append( self.M[3]( node ) )
         return opt_nodes
 

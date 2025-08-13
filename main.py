@@ -1,6 +1,11 @@
 from src.topology.Domain import Domain
 from src.utils.WavefrontParser import WavefrontParser
 
-domain = Domain( lambda x,y,z : x**2 + y**2 + z**2 - 0.9, ( -1.0,1.0,-1.0,1.0,-1.0,1.0 ), (10,10,10) )
+from math import sin,cos,pi
+f = lambda w: lambda x,y,z: sin(w*x)*cos(w*y) + sin(w*y)*cos(w*z) + sin(w*z)*cos(w*x)
+#f = lambda x,y,z : x**2 + y**2 + z**2 - 0.9
+
+
+domain = Domain( f(pi) , ( -1.0,1.0,-1.0,1.0,-1.0,1.0 ), (30,30,30) )
 nodes, elements = domain.DualContour2D()
 WavefrontParser.parse( "mesh.obj", nodes, elements )
