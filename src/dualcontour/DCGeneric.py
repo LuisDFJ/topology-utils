@@ -6,11 +6,9 @@ from src.topology.C3 import C3
 from src.topology.Opt import Opt
 from src.topology.Math import Math
 
-import numpy as np
-
 from typing import Callable
 
-class Domain:
+class DCGeneric:
     def __init__(
             self,
             f : Callable[ [ float, float, float ], float ],
@@ -28,7 +26,6 @@ class Domain:
         )
         self.r = max( (D[1]-D[0])/self.N[0], (D[3]-D[2])/self.N[1],(D[5]-D[4])/self.N[2] )
         self.L = 1.0
-        print( self.r, self.L )
 
     def evalC1( self, u : int, v : int, w : int, d : int ):
         if C1.bool( self.N, self.D, u,v,w,d, self.f ):
@@ -61,28 +58,3 @@ class Domain:
             else:
                 return Math.clampCircular( x, self.M[3]( (u,v,w) ), self.r )
                 #return self.M[3]( (u,v,w) )
-
-    def OptimizeSurface(
-        self,
-        nodes : list[ tuple[ int, int, int ] ]
-    ):
-        opt_nodes = []
-        for node in nodes:
-            opt_nodes.append( self.optC3( *node ) )
-        return opt_nodes
-
-    def DualContour2D( self ):
-        nodes    = []
-        elements = []
-        for c1 in C1.iter( self.N ):
-            facet = self.evalC1( *c1 )
-            if not isinstance( facet, type( None ) ):
-                element = []
-                for n in facet:
-                    if not n in nodes: nodes.append( n )
-                    element.append( nodes.index( n ) )
-                elements.append( tuple( element ) )
-        return self.OptimizeSurface( nodes ), elements
-
-
-
