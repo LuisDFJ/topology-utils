@@ -1,4 +1,5 @@
 from typing import Callable
+import numpy as np
 
 class Opt:
     NMax = 5
@@ -12,3 +13,10 @@ class Opt:
             if abs( f(x1) ) < cls.TOL: break 
         return x1
 
+    @classmethod
+    def C3( cls,
+            A : list[ tuple[float, float, float] ],
+            b : list[ float ] ):
+        An = np.array( A ); bn = np.array( b )
+        x, res, rank, s = np.linalg.lstsq( An, bn )
+        return tuple( x.tolist() ), rank == 3

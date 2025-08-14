@@ -1,3 +1,7 @@
+from typing import Callable
+from src.topology.C0 import C0
+
+
 class C1:
     @classmethod
     def iter(cls, N : tuple[int,int,int]):
@@ -6,6 +10,16 @@ class C1:
                 for v in range( N[1] + ( 0 if d == 1 else 1 ) ):
                     for u in range( N[0] + ( 0 if d == 0 else 1 ) ):
                         yield ( u,v,w,d )
+
+    @classmethod
+    def bool(cls,
+             N : tuple[int,int,int],
+             D : tuple[float,float,float,float,float,float],
+             u : int, v : int, w : int, d : int,
+             f : Callable[ [ float, float, float ], float ],
+        ):
+        p, q = cls.getC0( u,v,w,d )
+        return C0.bool( N, D, *p, f ) != C0.bool( N, D, *q, f )
 
     @classmethod
     def map(cls,

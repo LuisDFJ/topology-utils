@@ -1,3 +1,5 @@
+from typing import Callable
+
 # [0, N+1] x [0, N+1] x [0, N+1]
 class C0:
     @classmethod
@@ -6,6 +8,15 @@ class C0:
             for v in range( N[1] + 1 ):
                 for u in range( N[0] + 1 ):
                     yield u,v,w
+
+    @classmethod
+    def bool(cls,
+             N : tuple[int,int,int],
+             D : tuple[float,float,float,float,float,float],
+             u : int, v : int, w : int,
+             f : Callable[ [ float, float, float ], float ],
+        ):
+        return f( *cls.map( N,D,u,v,w ) ) < 0
 
     @classmethod
     def map(cls,
